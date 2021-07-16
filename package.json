@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^6.6.0",
     "nodemon": "^2.0.12",
     "prettier": "^1.19.1",
     "sequelize-cli": "^6.2.0"
