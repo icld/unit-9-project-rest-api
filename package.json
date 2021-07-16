@@ -11,14 +11,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.18.3"
+    "nodemon": "^2.0.12",
+    "prettier": "^1.19.1",
+    "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
+    "prettier-eslint": "^10.1.0",
     "promise.prototype.finally": "^3.1.2",
+    "sequelize": "^6.6.5",
     "sqlite3": "^5.0.0"
   }
 }
