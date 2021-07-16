@@ -78,4 +78,5 @@ module.exports = sequelize => {
       foreignKey: "userId"
     });
   };
+  return Course;
 };
