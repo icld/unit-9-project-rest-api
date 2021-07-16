@@ -5,7 +5,7 @@ const express = require("express");
 // Construct a router instance.
 const router = express.Router();
 const User = require("./models").User;
-
+const Course = require("./models").Course;
 // Handler function to wrap each route.
 function asyncHandler(cb) {
   return async (req, res, next) => {
@@ -23,7 +23,7 @@ router.get(
   "/users",
   asyncHandler(async (req, res) => {
     let users = await User.findAll();
-    res.json(users);
+    res.json(users).status(200);
   })
 );
 
@@ -54,8 +54,20 @@ router.post(
 router.get(
   "/courses",
   asyncHandler(async (req, res) => {
-    let users = await User.findAll();
-    res.json(users);
+    let courses = await Course.findAll();
+    res.json(courses).status(200);
+  })
+);
+
+router.get(
+  "/courses/:id",
+  asyncHandler(async (req, res) => {
+    let course = await Course.findByPk(req.params.id);
+    if (course) {
+      res.json(course).status(200);
+    } else {
+      res.status(400).json({ message: "Course not found" });
+    }
   })
 );
 
