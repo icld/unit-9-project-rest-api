@@ -1,0 +1,96 @@
+"use strict";
+
+const express = require("express");
+const { authenticateUser } = require("../middleware/auth-user");
+const { asyncHandler } = require("../middleware/async-handler");
+
+// Construct a router instance.
+const router = express.Router();
+const User = require("../models").User;
+const Course = require("../models").Course;
+
+// Get all courses
+router.get(
+  "/courses",
+  asyncHandler(async (req, res) => {
+    let courses = await Course.findAll();
+    res.json(courses).status(200);
+  })
+);
+
+// Get courses by ID
+router.get(
+  "/courses/:id",
+  asyncHandler(async (req, res) => {
+    let course = await Course.findByPk(req.params.id);
+    if (course) {
+      res.json(course).status(200);
+    } else {
+      res.status(400).json({ message: "Course not found" });
+    }
+  })
+);
+
+//Create a course
+router.post(
+  "/courses",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    try {
+      const course = await Course.create(req.body);
+      res.redirect(201, `/courses/${course.id}`);
+    } catch (error) {
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
+    }
+  })
+);
+
+//update a course
+router.put(
+  "/courses/:id",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    try {
+      const course = await Course.findByPk(req.params.id);
+
+      if (course) {
+        await course.update(req.body);
+        res.status(204).json({ message: "updated the course" });
+      } else {
+        res.status(400).json({ message: "Course not found" });
+      }
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
+        const errors = error.errors.map(error => error.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
+    }
+  })
+);
+
+// Delete a course
+router.delete(
+  "/courses/:id",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course) {
+      await course.destroy();
+      res.status(204).end();
+    } else {
+      res.status(400).json({ message: "Course not found" });
+    }
+  })
+);
+
+module.exports = router;

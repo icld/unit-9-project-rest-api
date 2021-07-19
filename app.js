@@ -3,7 +3,8 @@
 // load modules
 const express = require("express");
 const morgan = require("morgan");
-const routes = require("./routes");
+const courseRoutes = require("./routes/coursesRoutes");
+const userRoutes = require("./routes/userRoutes");
 const { sequelize } = require("./models");
 
 // variable to enable global error logging
@@ -27,7 +28,8 @@ app.get("/", (req, res) => {
 });
 
 //add Routes.
-app.use("/api", routes);
+app.use("/api", courseRoutes);
+app.use("/api", userRoutes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
