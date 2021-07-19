@@ -13,7 +13,9 @@ const Course = require("../models").Course;
 router.get(
   "/courses",
   asyncHandler(async (req, res) => {
-    let courses = await Course.findAll();
+    let courses = await Course.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] }
+    });
     res.json(courses).status(200);
   })
 );
@@ -22,7 +24,9 @@ router.get(
 router.get(
   "/courses/:id",
   asyncHandler(async (req, res) => {
-    let course = await Course.findByPk(req.params.id);
+    let course = await Course.findByPk(req.params.id, {
+      attributes: { exclude: ["createdAt", "updatedAt"] }
+    });
     if (course) {
       res.json(course).status(200);
     } else {
