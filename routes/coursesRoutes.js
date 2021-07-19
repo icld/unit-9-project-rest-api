@@ -66,8 +66,14 @@ router.put(
       const course = await Course.findByPk(req.params.id);
 
       if (course) {
-        await course.update(req.body);
-        res.status(204).json({ message: "updated the course" });
+        if (course.id === req.currentUser.id) {
+          await course.update(req.body);
+          res.status(204).json({ message: "updated the course" });
+        } else {
+          res
+            .status(403)
+            .json({ message: "You're not authorized to update this course" });
+        }
       } else {
         res.status(400).json({ message: "Course not found" });
       }
@@ -89,8 +95,14 @@ router.delete(
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
-      await course.destroy();
-      res.status(204).end();
+      if (course.id === req.currentUser.id) {
+        await course.destroy();
+        res.status(204).end();
+      } else {
+        res
+          .status(403)
+          .json({ message: "You're not authorized to delete this course" });
+      }
     } else {
       res.status(400).json({ message: "Course not found" });
     }
