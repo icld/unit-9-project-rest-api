@@ -47,18 +47,18 @@ module.exports = sequelize => {
         }
       },
       password: {
-        type: DataTypes.VIRTUAL,
+        type: DataTypes.STRING,
         allowNull: false,
+        set(val) {
+          const hashedPassword = bcrypt.hashSync(val, 10);
+          this.setDataValue("password", hashedPassword);
+        },
         validate: {
           notNull: {
             msg: "A password is required"
           },
           notEmpty: {
             msg: "Please provide a password"
-          },
-          len: {
-            args: [8, 20],
-            msg: "The password should be between 8 and 20 characters in length"
           }
         }
       }
@@ -83,7 +83,11 @@ module.exports = sequelize => {
 
   User.associate = models => {
     User.hasMany(models.Course, {
-      foreignKey: "userId"
+      as: "userInfo",
+      foreignKey: {
+        fieldName: "userId",
+        allowNull: false
+      }
     });
   };
   return User;
