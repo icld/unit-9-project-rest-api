@@ -15,16 +15,14 @@ router.get(
   "/users",
   authenticateUser,
   asyncHandler(async (req, res) => {
-    const user = req.currentUser;
-    res
-      .json({
-        id: user.id,
-        firstName: user.id,
-        lastName: user.lastName,
-        emailAddress: user.emailAddress,
-        passWord: user.passWord
-      })
-      .status(200);
+    const user = await User.findAll({
+      where: { id: req.currentUser.id },
+      attributes: { exclude: ["password", "createdAt", "updatedAt"] }
+    });
+    console.log(user);
+    user
+      ? res.json(user).status(200)
+      : res.status(400).json({ message: "user not found" });
   })
 );
 
