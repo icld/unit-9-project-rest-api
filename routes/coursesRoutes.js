@@ -13,7 +13,14 @@ const Course = require("../models").Course;
 router.get(
   "/courses",
   asyncHandler(async (req, res) => {
-    let courses = await Course.findAll({
+    const courses = await Course.findAll({
+      include: [
+        {
+          model: User,
+          as: "userInformation",
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] }
+        }
+      ],
       attributes: { exclude: ["createdAt", "updatedAt"] }
     });
     res.json(courses).status(200);
@@ -24,7 +31,14 @@ router.get(
 router.get(
   "/courses/:id",
   asyncHandler(async (req, res) => {
-    let course = await Course.findByPk(req.params.id, {
+    const course = await Course.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "userInformation",
+          attributes: { exclude: ["password", "createdAt", "updatedAt"] }
+        }
+      ],
       attributes: { exclude: ["createdAt", "updatedAt"] }
     });
     if (course) {
@@ -42,7 +56,10 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
-      res.redirect(201, `/courses/${course.id}`);
+      res
+        .status(201)
+        .location(`/api/courses/${course.id}`)
+        .end();
     } catch (error) {
       if (
         error.name === "SequelizeValidationError" ||
