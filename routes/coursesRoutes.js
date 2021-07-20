@@ -81,9 +81,9 @@ router.put(
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.findByPk(req.params.id);
-
+      console.log(course.id);
       if (course) {
-        if (course.id === req.currentUser.id) {
+        if (course.userId === req.currentUser.id) {
           await course.update(req.body);
           res.status(204).json({ message: "updated the course" });
         } else {
@@ -112,7 +112,7 @@ router.delete(
   asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
-      if (course.id === req.currentUser.id) {
+      if (course.userId === req.currentUser.id) {
         await course.destroy();
         res.status(204).end();
       } else {
