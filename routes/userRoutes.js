@@ -45,7 +45,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
-      res.redirect(201, "/");
+      res.status(201).redirect("/");
     } catch (error) {
       console.log("ERROR: ", error.name);
 
